@@ -1,4 +1,6 @@
-package ru.job4j.dream.model;
+package ru.job4j.dream.store;
+
+import ru.job4j.dream.model.Post;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -7,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Store {
-    private static final Store INST = new Store();
+    private static Store INST = new Store();
     private Map<Integer, Post> posts = new ConcurrentHashMap<>();
 
     private Store() {
