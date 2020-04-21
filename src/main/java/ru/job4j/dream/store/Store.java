@@ -19,9 +19,9 @@ public class Store {
 
 
     private Store() {
-        posts.put(1, new Post(1, "Junior Java Job", "desc for junior", LocalDate.of(2020, Month.JANUARY, 04)));
-        posts.put(2, new Post(2, "Middle Java Job", "desc for middle", LocalDate.of(2020, Month.FEBRUARY, 14)));
-        posts.put(3, new Post(3, "Senior Java Job", "desc for senior", LocalDate.of(2020, Month.MARCH, 20)));
+        posts.put(1, new Post(1, "Junior Java Job", "desc for junior"));
+        posts.put(2, new Post(2, "Middle Java Job", "desc for middle"));
+        posts.put(3, new Post(3, "Senior Java Job", "desc for senior"));
 
         candidates.put(1, new Candidate(1, "Junior Java"));
         candidates.put(2, new Candidate(2, "Middle Java"));
