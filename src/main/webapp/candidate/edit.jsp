@@ -44,6 +44,7 @@
                         <label>Имя</label>
                         <input type="text" class="form-control" name="name" value="<%=candidate.getName()%>">
                     </div>
+
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>
             </div>
