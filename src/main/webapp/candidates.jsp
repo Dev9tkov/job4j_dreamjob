@@ -35,7 +35,8 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">Названия</th>
+                        <th scope="col">Имена</th>
+                        <th scope="col">Фото</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,7 +46,20 @@
                                 <a href="${pageContext.request.contextPath}/candidate/edit.jsp?id=${candidate.id}">
                                     <i class="fa fa-edit mr-3"></i>
                                 </a>
+                                <a href="${pageContext.request.contextPath}/delete?id=${candidate.id}" method="GET">Del</a>
                                 <c:out value="${candidate.name}"/>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test = "${candidate.photoId != null}">
+                                        <img src="${pageContext.servletContext.contextPath}/download?name=${candidate.photoId}" width="100px" height="100px"/>
+                                        <br>
+                                        <a href="${pageContext.servletContext.contextPath}/download?name=${candidate.photoId}">Download</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:out value="no image"/>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                         </tr>
                     </c:forEach>
@@ -57,3 +71,5 @@
 </div>
 </body>
 </html>
+
+

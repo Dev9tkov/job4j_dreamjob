@@ -3,6 +3,11 @@ package ru.job4j.dream.store;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
@@ -59,5 +64,19 @@ public class Store {
     }
     public Candidate findByIdCan(int id) {
         return candidates.get(id);
+    }
+
+    public void delete(int id) throws IOException {
+        deletePhoto(id);
+        candidates.remove(id);
+    }
+
+    private void deletePhoto(int id) throws IOException {
+        Candidate candidate = candidates.get(id);
+        String photoId = candidate.getPhotoId();
+        if (photoId != null) {
+            Path pathToDelete = Paths.get("images" + File.separator + photoId);
+            Files.delete(pathToDelete);
+        }
     }
 }

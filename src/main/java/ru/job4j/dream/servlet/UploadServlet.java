@@ -31,12 +31,16 @@ public class UploadServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //Создаем класс фабрику
         DiskFileItemFactory factory = new DiskFileItemFactory();
         ServletContext servletContext = this.getServletConfig().getServletContext();
+        //Устанавливаем временную директорию
         File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
         factory.setRepository(repository);
+        //Создаем загрузчик
         ServletFileUpload upload = new ServletFileUpload(factory);
         try {
+            //парсит request чтобы взять FileItem
             List<FileItem> items = upload.parseRequest(req);
             File folder = new File("images");
             if (!folder.exists()) {
@@ -44,10 +48,15 @@ public class UploadServlet extends HttpServlet {
             }
             for (FileItem item : items) {
                 if (!item.isFormField()) {
+                    //сохраняет файл на сервере в папке bin/images
                     File file = new File(folder + File.separator + item.getName());
                     try (FileOutputStream out = new FileOutputStream(file)) {
                         out.write(item.getInputStream().readAllBytes());
                     }
+                } else {
+                    String fieldName = item.getFieldName();
+                    String value = item.getString();
+                    System.out.println(item.getFieldName()+"="+item.getString());
                 }
             }
         } catch (FileUploadException e) {
