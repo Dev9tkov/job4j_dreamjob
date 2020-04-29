@@ -18,12 +18,14 @@ public class PsqlStore implements Store {
      */
     private static final BasicDataSource pool = new BasicDataSource();
 
+    private static PsqlStore INST = new PsqlStore();
+
     /**
      * configure the database from db.properties
      * setMinIdle - set minimum number of connections
      * setMaxIdle - set maximum number of connections
      */
-    private PsqlStore() {
+    public PsqlStore() {
         Properties cfg = new Properties();
         try (BufferedReader io = new BufferedReader(
                 new FileReader("db.properties")
@@ -66,12 +68,8 @@ public class PsqlStore implements Store {
         }
     }
 
-    private static final class Lazy {
-        private static final Store INST = new PsqlStore();
-    }
-
-    public static Store instOf() {
-        return Lazy.INST;
+    public static PsqlStore instOf() {
+        return INST;
     }
 
     @Override
@@ -160,5 +158,73 @@ public class PsqlStore implements Store {
             e.printStackTrace();
         }
         return post;
+    }
+
+    @Override
+    public void saveCandidate(Candidate candidate) {
+        if (candidate.getId() == 0) {
+            createCan(candidate);
+        } else {
+            updateCan(candidate);
+        }
+    }
+
+    private Candidate createCan(Candidate candidate) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name) VALUES (?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, candidate.getName());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    candidate.setId(id.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return candidate;
+    }
+
+    private void updateCan(Candidate candidate) {
+        String update = "update candidate set name = ? where id = ?";
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement(update)) {
+            ps.setString(1, candidate.getName());
+            ps.setInt(2, candidate.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        String delete = "delete from candidate where id = ?";
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement(delete)) {
+            ps.setInt(1, id);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Candidate findByIdCan(int id) {
+        Candidate candidate = null;
+        String find = "select id, name from candidate where id = ?";
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(find)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            String name = null;
+            while (rs.next()) {
+                name = rs.getString("name");
+            }
+            candidate = new Candidate(id, name);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return candidate;
     }
 }

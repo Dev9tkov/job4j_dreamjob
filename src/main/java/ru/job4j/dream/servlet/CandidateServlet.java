@@ -5,7 +5,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import ru.job4j.dream.model.Candidate;
-import ru.job4j.dream.store.MemStore;
+import ru.job4j.dream.store.PsqlStore;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -21,7 +21,7 @@ import java.util.List;
 public class CandidateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("candidates", MemStore.instOf().findAllCandidates());
+        req.setAttribute("candidates", PsqlStore.instOf().findAllCandidates());
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }
 
@@ -57,7 +57,7 @@ public class CandidateServlet extends HttpServlet {
             e.printStackTrace();
         }
         Candidate candidate = new Candidate(id, name, photoId);
-        MemStore.instOf().saveCandidate(candidate);
+        PsqlStore.instOf().saveCandidate(candidate);
         resp.sendRedirect(req.getContextPath() + "/candidates.do");
     }
 }
