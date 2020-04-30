@@ -19,6 +19,18 @@
                 alert("description " + $('description').attr('title'));
             }
         }
+        function addRow() {
+            var name = $('#name').val();
+            var surname = $('#surname').val();
+            let gender = $('[name="gender"]:checked').val();
+            var desc = $('#description').val();
+            $('#table tr:last').after('<tr>' +
+                '<td>' + name +'</td>' +
+                '<td>' + surname +'</td>' +
+                '<td>' + gender +'</td>' +
+                '<td>' + desc +'</td>' +
+                '</tr>');
+        }
     </script>
 </head>
 <body>
@@ -69,12 +81,12 @@
         </div>
 
         <div class="col-sm-offset-2 col-sm-10">
-            <table class="table table-hover">
+            <button type="button" class="btn btn-success" onclick="addRow()">Add row</button>
+            <table class="table table-striped" id="table">
                 <thead>
                 <tr>
                     <th>Name</th>
                     <th>Surname</th>
-                    <th>City</th>
                     <th>Gender</th>
                     <th>Description</th>
                 </tr>
@@ -83,14 +95,12 @@
                 <tr>
                     <td>Misha</td>
                     <td>Jonin</td>
-                    <td>Perm</td>
                     <td>male</td>
                     <td>description</td>
                 </tr>
                 <tr>
                     <td>Mary</td>
                     <td>Pova</td>
-                    <td>Kazan'</td>
                     <td>female</td>
                     <td>description</td>
                 </tr>
