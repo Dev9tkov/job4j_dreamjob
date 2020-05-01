@@ -7,7 +7,6 @@ import ru.job4j.dream.model.Post;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.*;
 
@@ -95,7 +94,7 @@ public class PsqlStore implements Store {
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM candidate")) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name")));
+                    candidates.add(new Candidate(it.getInt("id"), it.getString("name"), it.getString("photoId")));
                 }
             }
         } catch (Exception e) {
@@ -171,8 +170,9 @@ public class PsqlStore implements Store {
 
     private Candidate createCan(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name) VALUES (?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name, photoId) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, candidate.getName());
+            ps.setString(2, candidate.getPhotoId());
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -186,11 +186,12 @@ public class PsqlStore implements Store {
     }
 
     private void updateCan(Candidate candidate) {
-        String update = "update candidate set name = ? where id = ?";
+        String update = "update candidate set name = ?,  photoId = ? where id = ?";
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement(update)) {
             ps.setString(1, candidate.getName());
-            ps.setInt(2, candidate.getId());
+            ps.setString(2, candidate.getPhotoId());
+            ps.setInt(3, candidate.getId());
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -212,16 +213,18 @@ public class PsqlStore implements Store {
     @Override
     public Candidate findByIdCan(int id) {
         Candidate candidate = null;
-        String find = "select id, name from candidate where id = ?";
+        String find = "select id, name, photoId from candidate where id = ?";
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(find)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             String name = null;
+            String photoId = null;
             while (rs.next()) {
                 name = rs.getString("name");
+                photoId = rs.getString("photoId");
             }
-            candidate = new Candidate(id, name);
+            candidate = new Candidate(id, name, photoId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
