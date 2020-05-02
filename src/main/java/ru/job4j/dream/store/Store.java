@@ -26,4 +26,6 @@ public interface Store {
     Collection<User> findAllUsers();
 
     void saveUser(User user);
+
+    User findByIdUser(int id);
 }

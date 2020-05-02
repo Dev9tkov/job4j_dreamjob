@@ -288,4 +288,27 @@ public class PsqlStore implements Store {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public User findByIdUser(int id) {
+        User user = null;
+        String find = "select id, name, email, password from client where id = ?";
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(find)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            String name = null;
+            String email = null;
+            String password = null;
+            while (rs.next()) {
+                name = rs.getString("name");
+                email = rs.getString("email");
+                password = rs.getString("password");
+            }
+            user = new User(id, name, email, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

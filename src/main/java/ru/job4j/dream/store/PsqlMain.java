@@ -17,6 +17,7 @@ public class PsqlMain {
         store.saveUser(new User(3, "Yum", "moatre@yahoo", "oper"));
 
         System.out.println(store.findByEmail("loac@local"));
+        System.out.println(store.findById(2));
 
         for (User user : store.findAllUsers()) {
             System.out.println(user.getId() + " " + user.getName() + " " + user.getEmail() + " " + user.getPassword());

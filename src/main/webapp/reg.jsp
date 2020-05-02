@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="ru.job4j.dream.model.Candidate" %>
 <%@ page import="ru.job4j.dream.store.PsqlStore" %>
+<%@ page import="ru.job4j.dream.model.User" %>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,15 +23,25 @@
     <title>Работа мечты</title>
 </head>
 <body>
+<%
+    String id = request.getParameter("id");
+    User user = new User(0, "", "", "");
+    if (id != null) {
+        user = PsqlStore.instOf().findByIdUser(Integer.valueOf(id));
+    }
+%>
 <div class="container pt-3">
     <div class="row">
         <div class="col" style="width: 100%">
             <div class="card-header">
-                Авторизация
-                <a href="<%=request.getContextPath()%>/reg.jsp">Регистрация</a>
+                Регистрация
             </div>
             <div class="card-body">
-                <form action="<%=request.getContextPath()%>/auth.do" method="post">
+                <form action="<%=request.getContextPath()%>/reg.do?id=<%=user.getId()%>" method="post">
+                    <div class="form-group">
+                        <label>Имя</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
                     <div class="form-group">
                         <label>Почта</label>
                         <input type="text" class="form-control" name="email">
@@ -38,7 +50,7 @@
                         <label>Пароль</label>
                         <input type="text" class="form-control" name="password">
                     </div>
-                    <button type="submit" class="btn btn-primary">Войти</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>
             </div>
         </div>
