@@ -18,8 +18,6 @@ public class PsqlStore implements Store {
      */
     private static final BasicDataSource pool = new BasicDataSource();
 
-    private static PsqlStore INST = new PsqlStore();
-
     /**
      * configure the database from db.properties
      * setMinIdle - set minimum number of connections
@@ -50,6 +48,14 @@ public class PsqlStore implements Store {
         createTables();
     }
 
+    private static final class Lazy {
+        private static final Store INST = new PsqlStore();
+    }
+
+    public static Store instOf() {
+        return Lazy.INST;
+    }
+
     /**
      * Create tables Post & Candidate if not exist
      */
@@ -66,10 +72,6 @@ public class PsqlStore implements Store {
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
-    }
-
-    public static PsqlStore instOf() {
-        return INST;
     }
 
     @Override
