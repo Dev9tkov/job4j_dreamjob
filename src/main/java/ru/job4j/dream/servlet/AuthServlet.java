@@ -11,15 +11,17 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class AuthServlet extends HttpServlet {
+
+    private final String adminEmail = "root@local";
+    private final String adminPass = "root";
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        User admin;
-        if ("root@local".equals(email) && "root".equals(password)) {
+        User admin = PsqlStore.instOf().findByEmail(email);
+        if (adminEmail.equals(email) && adminPass.equals(password) && adminEmail.equals(admin.getEmail()) && adminPass.equals(admin.getPassword())) {
             HttpSession sc = req.getSession();
-            admin = PsqlStore.instOf().findByEmail(email);
-            admin.setName("Admin");
             sc.setAttribute("user", admin);
             resp.sendRedirect(req.getContextPath() + "/posts.do");
         } else {
