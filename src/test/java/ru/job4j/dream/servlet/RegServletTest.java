@@ -8,6 +8,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import ru.job4j.dream.model.User;
 import ru.job4j.dream.store.PsqlStore;
 import ru.job4j.dream.store.Store;
 import ru.job4j.dream.store.StoreStub;
@@ -27,21 +28,26 @@ import static org.mockito.Mockito.when;
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*", "javax.management.*"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PsqlStore.class)
-public class PostServletTest {
+public class RegServletTest {
+
     @Test
-    public void whenAddPostThenSaveIt() throws ServletException, IOException {
+    public void whenAddUserThenSaveIt() throws ServletException, IOException {
+        User user = new User (1, "Masha", "local@mail", "pass");
         Store store = new StoreStub();
+        store.saveUser(user);
+
         PowerMockito.mockStatic(PsqlStore.class);
         Mockito.when(PsqlStore.instOf()).thenReturn(store);
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse resp = mock(HttpServletResponse.class);
 
-        when(req.getParameter("id")).thenReturn("0");
-        when(req.getParameter("name")).thenReturn("Junior");
-        PostServlet postServlet = new PostServlet();
+        when(req.getParameter("id")).thenReturn("1");
+        when(req.getParameter("name")).thenReturn("Masha");
+        when(req.getParameter("email")).thenReturn("local@mail");
+        when(req.getParameter("password")).thenReturn("pass");
 
-        postServlet.doPost(req, resp);
-        assertThat(new ArrayList<>(store.findAllPosts()).get(0).getName(), is ("Junior"));
+        new RegServlet().doPost(req, resp);
+
+        assertThat(new ArrayList<>(store.findAllUsers()).get(0).getName(), is ("Masha"));
     }
 }
-
