@@ -16,6 +16,14 @@ public class PsqlMain {
         store.saveUser(new User(2, "Nel", "noac@mail", "twer"));
         store.saveUser(new User(3, "Yum", "moatre@yahoo", "oper"));
 
+        store.saveCandidate(new Candidate(0, "Max", "picture1", "Rus", "perm"));
+        store.saveCandidate(new Candidate(0, "Igor", "picture2", "USA", "LA"));
+        store.saveCandidate(new Candidate(0, "Kuzma", "picture3", "Ger", "Berlin"));
+
+        for (Candidate candidate : store.findAllCandidates()) {
+            System.out.println(candidate);
+        }
+
         System.out.println(store.findByEmail("loac@local"));
         System.out.println(store.findById(2));
 

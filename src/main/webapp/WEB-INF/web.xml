@@ -114,4 +114,13 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <servlet>
+    <servlet-name>CountryJsonServlet</servlet-name>
+    <servlet-class>ru.job4j.dream.servlet.CountryJsonServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CountryJsonServlet</servlet-name>
+    <url-pattern>/city</url-pattern>
+  </servlet-mapping>
+
 </web-app>

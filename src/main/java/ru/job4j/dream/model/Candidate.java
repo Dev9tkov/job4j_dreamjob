@@ -6,6 +6,8 @@ public class Candidate {
     private int id;
     private String name;
     private String photoId;
+    private String country;
+    private String city;
 
     public Candidate(int id, String name) {
         this.id = id;
@@ -16,6 +18,14 @@ public class Candidate {
         this.id = id;
         this.name = name;
         this.photoId = photoId;
+    }
+
+    public Candidate(int id, String name, String photoId, String country, String city) {
+        this.id = id;
+        this.name = name;
+        this.photoId = photoId;
+        this.country = country;
+        this.city = city;
     }
 
     public int getId() {
@@ -42,6 +52,22 @@ public class Candidate {
         this.photoId = photoId;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,6 +88,8 @@ public class Candidate {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", photoId='" + photoId + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
                 '}';
     }
 }

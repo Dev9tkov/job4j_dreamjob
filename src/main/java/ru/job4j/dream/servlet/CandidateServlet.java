@@ -29,8 +29,11 @@ public class CandidateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         int id = Integer.valueOf(req.getParameter("id"));
-        String name = null;
-        String photoId = null;
+        String name = "";
+        String photoId = "";
+        String country = "";
+        String city = "";
+
         DiskFileItemFactory factory = new DiskFileItemFactory();
         ServletContext servletContext = this.getServletConfig().getServletContext();
         File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
@@ -49,14 +52,20 @@ public class CandidateServlet extends HttpServlet {
                     try (FileOutputStream out = new FileOutputStream(file)) {
                             out.write(item.getInputStream().readAllBytes());
                         }
-                } else if (item.isFormField()) {
-                    name = item.getString();
+                } else {
+                    if (item.getFieldName().equals("name")) {
+                        name = item.getString();
+                    } else if (item.getFieldName().equals("country")) {
+                        country = item.getString();
+                    } else if (item.getFieldName().equals("city")) {
+                        city = item.getString();
+                    }
                 }
             }
         } catch (FileUploadException e) {
             e.printStackTrace();
         }
-        Candidate candidate = new Candidate(id, name, photoId);
+        Candidate candidate = new Candidate(id, name, photoId, country, city);
         PsqlStore.instOf().saveCandidate(candidate);
         resp.sendRedirect(req.getContextPath() + "/candidates.do");
     }

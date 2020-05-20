@@ -28,4 +28,9 @@ public interface Store {
     void saveUser(User user);
 
     User findByIdUser(int id);
+
+    Collection<String> getCountry();
+
+    Collection<String> getCity(String country);
+
 }

@@ -97,7 +97,14 @@ public class PsqlStore implements Store {
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM candidate")) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name"), it.getString("photoId")));
+                    candidates.add(new Candidate(
+                            it.getInt("id"),
+                            it.getString("name"),
+                            it.getString("photoId"),
+                            it.getString("country"),
+                            it.getString("city")
+                            )
+                    );
                 }
             }
         } catch (Exception e) {
@@ -173,9 +180,11 @@ public class PsqlStore implements Store {
 
     private Candidate createCan(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name, photoId) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name, photoId, country, city) VALUES (?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, candidate.getName());
             ps.setString(2, candidate.getPhotoId());
+            ps.setString(3, candidate.getCountry());
+            ps.setString(4, candidate.getCity());
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -189,12 +198,14 @@ public class PsqlStore implements Store {
     }
 
     private void updateCan(Candidate candidate) {
-        String update = "update candidate set name = ?,  photoId = ? where id = ?";
+        String update = "update candidate set name = ?,  photoId = ?, country = ?, city = ? where id = ?";
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement(update)) {
             ps.setString(1, candidate.getName());
             ps.setString(2, candidate.getPhotoId());
-            ps.setInt(3, candidate.getId());
+            ps.setString(3, candidate.getCountry());
+            ps.setString(4, candidate.getCity());
+            ps.setInt(5, candidate.getId());
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -216,18 +227,22 @@ public class PsqlStore implements Store {
     @Override
     public Candidate findByIdCan(int id) {
         Candidate candidate = null;
-        String find = "select id, name, photoId from candidate where id = ?";
+        String find = "select id, name, photoId, country, city from candidate where id = ?";
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(find)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             String name = null;
             String photoId = null;
+            String country = null;
+            String city = null;
             while (rs.next()) {
                 name = rs.getString("name");
                 photoId = rs.getString("photoId");
+                country = rs.getString("country");
+                city = rs.getString("city");
             }
-            candidate = new Candidate(id, name, photoId);
+            candidate = new Candidate(id, name, photoId, country, city);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -312,5 +327,39 @@ public class PsqlStore implements Store {
             e.printStackTrace();
         }
         return user;
+    }
+
+    @Override
+    public Collection<String> getCountry() {
+        List<String> res = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM country")) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    res.add(it.getString("name"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    @Override
+    public Collection<String> getCity(String country) {
+        List<String> res = new ArrayList<>();
+        String getCity = "SELECT city.name FROM city INNER JOIN country ON city.country_id = country.id WHERE country.name = ?";
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement(getCity)) {
+            ps.setString(1, country);
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    res.add(it.getString("name"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 }

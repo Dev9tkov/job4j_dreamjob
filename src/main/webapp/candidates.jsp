@@ -21,6 +21,7 @@
     <title>Работа мечты</title>
 </head>
 <body>
+
 <div class="container pt-3">
     <li class="nav-item">
         <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp"> <c:out value="${user.name}"/> | Выйти</a>
@@ -35,6 +36,8 @@
                     <thead>
                     <tr>
                         <th scope="col">Имена</th>
+                        <th scope="col">Страна</th>
+                        <th scope="col">Город</th>
                         <th scope="col">Фото</th>
                     </tr>
                     </thead>
@@ -47,6 +50,12 @@
                                 </a>
                                 <a href="${pageContext.request.contextPath}/delete?id=${candidate.id}" method="GET">Del</a>
                                 <c:out value="${candidate.name}"/>
+                            </td>
+                            <td>
+                                <c:out value="${candidate.country}"/>
+                            </td>
+                            <td>
+                                <c:out value="${candidate.city}"/>
                             </td>
                             <td>
                                 <c:choose>

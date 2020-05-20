@@ -79,4 +79,14 @@ public class StoreStub implements Store {
     public User findByIdUser(int id) {
         return null;
     }
+
+    @Override
+    public Collection<String> getCountry() {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getCity(String country) {
+        return null;
+    }
 }
