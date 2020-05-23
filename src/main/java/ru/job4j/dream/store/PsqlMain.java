@@ -34,5 +34,7 @@ public class PsqlMain {
         for (Post post : store.findAllPosts()) {
             System.out.println(post.getId() + " " + post.getName());
         }
+        System.out.println(store.findByIdCan(2));
+        System.out.println(store.findByIdCan(4));
     }
 }

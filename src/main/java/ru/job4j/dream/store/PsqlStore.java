@@ -5,6 +5,7 @@ import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 
+import javax.swing.plaf.OptionPaneUI;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -226,7 +227,8 @@ public class PsqlStore implements Store {
 
     @Override
     public Candidate findByIdCan(int id) {
-        Candidate candidate = null;
+        Candidate candidate;
+        Optional<Candidate> cand = Optional.empty();
         String find = "select id, name, photoId, country, city from candidate where id = ?";
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(find)) {
@@ -243,10 +245,11 @@ public class PsqlStore implements Store {
                 city = rs.getString("city");
             }
             candidate = new Candidate(id, name, photoId, country, city);
+            cand = Optional.of(candidate);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return candidate;
+        return cand.orElse(new Candidate(id, "", "", "", ""));
     }
 
     @Override

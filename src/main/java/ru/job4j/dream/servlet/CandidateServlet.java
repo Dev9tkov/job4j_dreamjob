@@ -53,11 +53,11 @@ public class CandidateServlet extends HttpServlet {
                             out.write(item.getInputStream().readAllBytes());
                         }
                 } else {
-                    if (item.getFieldName().equals("name")) {
+                    if ("name".equals(item.getFieldName())) {
                         name = item.getString();
-                    } else if (item.getFieldName().equals("country")) {
+                    } else if ("country".equals(item.getFieldName())) {
                         country = item.getString();
-                    } else if (item.getFieldName().equals("city")) {
+                    } else if ("city".equals(item.getFieldName())) {
                         city = item.getString();
                     }
                 }
