@@ -4,10 +4,7 @@ import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class is needed for testing
@@ -66,8 +63,8 @@ public class StoreStub implements Store {
     }
 
     @Override
-    public Candidate findByIdCan(int id) {
-        return null;
+    public Optional<Candidate> findByIdCan(int id) {
+        return Optional.empty();
     }
 
     @Override

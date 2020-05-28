@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="ru.job4j.dream.model.Candidate" %>
 <%@ page import="ru.job4j.dream.store.PsqlStore" %>
+<%@ page import="java.util.Optional" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="en">
@@ -60,7 +61,8 @@
     String id = request.getParameter("id");
     Candidate candidate = new Candidate(0, "");
     if (id != null) {
-        candidate = PsqlStore.instOf().findByIdCan(Integer.valueOf(id));
+        Optional<Candidate> rsl = PsqlStore.instOf().findByIdCan(Integer.valueOf(id));
+        candidate = rsl.get();
     }
 %>
 <div class="container pt-3">
